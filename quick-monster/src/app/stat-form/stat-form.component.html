@@ -1,0 +1,15 @@
+<p>stat-form works!</p>
+
+<label for="name">Name </label>
+<input id="name">
+
+<label for="challenge">CR </label>
+<select id="challenge">
+    <option *ngFor="let cr of crList" [value]="cr">{{ cr }}</option>
+</select>
+
+<label for="speed">Speed</label>
+<input id="speed">
+
+<br>
+
