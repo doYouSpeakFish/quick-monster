@@ -1,15 +1,89 @@
-<p>stat-form works!</p>
-
 <label for="name">Name </label>
 <input id="name">
 
 <label for="challenge">CR </label>
 <select id="challenge">
-    <option *ngFor="let cr of crList" [value]="cr">{{ cr }}</option>
+    <option *ngFor="let cr of monsterBases | keyvalue: unsorted" [value]="cr.key">{{ cr.key }}</option>
 </select>
 
 <label for="speed">Speed</label>
 <input id="speed">
 
-<br>
+<h2>Ability Scores</h2> 
+<label for="strength">Str: </label>
+<label for="weak">Weak</label><input type="radio" id="weak" name="strength" value="weak">
+<label for="average">Average</label><input type="radio" id="average" name="strength" value="average" checked="checked">
+<label for="strong">Strong</label><input type="radio" id="strong" name="strength" value="strong">
 
+<br>
+<label for="dex">Dex: </label>
+<label for="weak">Weak</label><input type="radio" id="weak" name="dex" value="weak">
+<label for="average">Average</label><input type="radio" id="average" name="dex" value="average" checked="checked">
+<label for="strong">Strong</label><input type="radio" id="strong" name="dex" value="strong">
+
+<br>
+<label for="con">Con: </label>
+<label for="weak">Weak</label><input type="radio" id="weak" name="con" value="weak">
+<label for="average">Average</label><input type="radio" id="average" name="con" value="average" checked="checked">
+<label for="strong">Strong</label><input type="radio" id="strong" name="con" value="strong">
+
+<br>
+<label for="intelligence">Int: </label>
+<label for="weak">Weak</label><input type="radio" id="weak" name="intelligence" value="weak">
+<label for="average">Average</label><input type="radio" id="average" name="intelligence" value="average" checked="checked">
+<label for="strong">Strong</label><input type="radio" id="strong" name="intelligence" value="strong">
+
+<br>
+<label for="wis">Wis: </label>
+<label for="weak">Weak</label><input type="radio" id="weak" name="wis" value="weak">
+<label for="average">Average</label><input type="radio" id="average" name="wis" value="average" checked="checked">
+<label for="strong">Strong</label><input type="radio" id="strong" name="wis" value="strong">
+
+<br>
+<label for="cha">Cha: </label>
+<label for="weak">Weak</label><input type="radio" id="weak" name="cha" value="weak">
+<label for="average">Average</label><input type="radio" id="average" name="cha" value="average" checked="checked">
+<label for="strong">Strong</label><input type="radio" id="strong" name="cha" value="strong">
+
+<h2>Actions</h2>
+<div *ngFor="let action of actions">
+    <label>Name</label>
+    <input type="text" [(ngModel)]="action.text">
+    <label>Uses an attack roll</label>
+    <input type="checkbox" id="isAttack" name="isAttack" value="isAttack" [(ngModel)]="action.attack">
+    <label>Uses a saving throw</label>
+    <input type="checkbox" id="isSave" name="isSave" value="isSave" [(ngModel)]="action.save">
+    <div *ngIf="!action.attack && !action.save">
+        <label for="action-text">Action Text</label>
+        <input type="text" id="action-text" [(ngModel)]="action.attackText">
+    </div>
+    <div *ngIf="action.attack || action.save">
+        <label for="limitedUse">Limited Use</label>
+        <input type="checkbox" id="limitedUse" name="limitedUse" value="limitedUse" [(ngModel)]="action.limitedUse">
+        <label for="multiTarget">Multi-target</label>
+        <input type="checkbox" id="multiTarget" name="multiTarget" value="multiTarget" [(ngModel)]="action.multiTarget">
+    </div>
+    <div *ngIf="action.attack">
+        <label>Attack Text (optional)</label>
+        <input type="text" [(ngModel)]="action.attackText">
+        <label for="attackRollDamage">Attack Roll Damage (relative)</label>
+        <select id="attackRollDamage" [(ngModel)]="action.attackDamage">
+            <option *ngFor="let i of damageModifier" [value]="i">
+                {{ i }}%
+            </option>
+        </select>
+    </div>
+    <div *ngIf="action.save">
+        <label>Save Text (optional)</label>
+        <input type="text" [(ngModel)]="action.attackText">
+        <label for="attackRollDamage">Save Damage (relative)</label>
+        <select id="attackRollDamage" [(ngModel)]="action.saveDamage">
+            <option *ngFor="let i of damageModifier" [value]="i">
+                {{ i }}%
+            </option>
+        </select>
+    </div>
+    <button (click)="removeAction(action)">Remove Action</button>
+
+</div>
+<button (click)="addAction()">Add Action</button>
