@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { METRICS } from '../metricsList';
 
 @Component({
   selector: 'app-stat-form',
@@ -7,14 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class StatFormComponent implements OnInit {
 
-  crList: number[] = [];
+  crList: string[] = Object.keys(METRICS);
 
   constructor() { }
 
-  ngOnInit(): void {
-    for (var i=1; i<=30; i++) {
-      this.crList.push(i);
-    }
-  }
+  ngOnInit(): void { }
 
 }
