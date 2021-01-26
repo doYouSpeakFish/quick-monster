@@ -6,6 +6,7 @@ export class MonsterStatBase {
         public attack: number,
         public damage: number,
         public dc: number,
-        public save: number
+        public save: number,
+        public proficiency: number
     ) {}
 }

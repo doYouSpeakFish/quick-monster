@@ -9,44 +9,78 @@
 <label for="speed">Speed</label>
 <input id="speed">
 
-<h2>Ability Scores</h2> 
-<label for="strength">Str: </label>
-<label for="weak">Weak</label><input type="radio" id="weak" name="strength" value="weak">
-<label for="average">Average</label><input type="radio" id="average" name="strength" value="average" checked="checked">
-<label for="strong">Strong</label><input type="radio" id="strong" name="strength" value="strong">
+<!--TODO display ability score options using a table with headings instead of the labels-->
+<h2>Ability Scores</h2>
+<fieldset>
+    <legend>Str</legend>
+    <span *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED">
+        <label for="str-{{ abilityStrength }}">{{ abilityStrength | titlecase }}</label>
+        <input id="str-{{ abilityStrength }}"
+        type="radio"
+        name="str"
+        value="{{ abilityStrength }}"
+        [(ngModel)]="monster.strLevel">
+    </span>
+</fieldset>
+<fieldset>
+    <legend>Dex</legend>
+    <span *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED">
+        <label for="dex-{{ abilityStrength }}">{{ abilityStrength | titlecase }}</label>
+        <input id="dex-{{ abilityStrength }}"
+        type="radio"
+        name="dex"
+        value="{{ abilityStrength }}"
+        [(ngModel)]="monster.dexLevel">
+    </span>
+</fieldset>
+<fieldset>
+    <legend>Con</legend>
+    <span *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED">
+        <label for="con-{{ abilityStrength }}">{{ abilityStrength | titlecase }}</label>
+        <input id="con-{{ abilityStrength }}"
+        type="radio"
+        name="dex"
+        value="{{ abilityStrength }}"
+        [(ngModel)]="monster.conLevel">
+    </span>
+</fieldset>
+<fieldset>
+    <legend>Int</legend>
+    <span *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED">
+        <label for="int-{{ abilityStrength }}">{{ abilityStrength | titlecase }}</label>
+        <input id="int-{{ abilityStrength }}"
+        type="radio"
+        name="int"
+        value="{{ abilityStrength }}"
+        [(ngModel)]="monster.intLevel">
+    </span>
+</fieldset>
+<fieldset>
+    <legend>Wis</legend>
+    <span *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED">
+        <label for="wis-{{ abilityStrength }}">{{ abilityStrength | titlecase }}</label>
+        <input id="wis-{{ abilityStrength }}"
+        type="radio"
+        name="wis"
+        value="{{ abilityStrength }}"
+        [(ngModel)]="monster.wisLevel">
+    </span>
+</fieldset>
+<fieldset>
+    <legend>Cha</legend>
+    <span *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED">
+        <label for="cha-{{ abilityStrength }}">{{ abilityStrength | titlecase }}</label>
+        <input id="cha-{{ abilityStrength }}"
+        type="radio"
+        name="cha"
+        value="{{ abilityStrength }}"
+        [(ngModel)]="monster.chaLevel">
+    </span>
+</fieldset>
 
-<br>
-<label for="dex">Dex: </label>
-<label for="weak">Weak</label><input type="radio" id="weak" name="dex" value="weak">
-<label for="average">Average</label><input type="radio" id="average" name="dex" value="average" checked="checked">
-<label for="strong">Strong</label><input type="radio" id="strong" name="dex" value="strong">
-
-<br>
-<label for="con">Con: </label>
-<label for="weak">Weak</label><input type="radio" id="weak" name="con" value="weak">
-<label for="average">Average</label><input type="radio" id="average" name="con" value="average" checked="checked">
-<label for="strong">Strong</label><input type="radio" id="strong" name="con" value="strong">
-
-<br>
-<label for="intelligence">Int: </label>
-<label for="weak">Weak</label><input type="radio" id="weak" name="intelligence" value="weak">
-<label for="average">Average</label><input type="radio" id="average" name="intelligence" value="average" checked="checked">
-<label for="strong">Strong</label><input type="radio" id="strong" name="intelligence" value="strong">
-
-<br>
-<label for="wis">Wis: </label>
-<label for="weak">Weak</label><input type="radio" id="weak" name="wis" value="weak">
-<label for="average">Average</label><input type="radio" id="average" name="wis" value="average" checked="checked">
-<label for="strong">Strong</label><input type="radio" id="strong" name="wis" value="strong">
-
-<br>
-<label for="cha">Cha: </label>
-<label for="weak">Weak</label><input type="radio" id="weak" name="cha" value="weak">
-<label for="average">Average</label><input type="radio" id="average" name="cha" value="average" checked="checked">
-<label for="strong">Strong</label><input type="radio" id="strong" name="cha" value="strong">
 
 <h2>Actions</h2>
-<div *ngFor="let action of actions">
+<div *ngFor="let action of monster.actions">
     <label>Name</label>
     <input type="text" [(ngModel)]="action.text">
     <label>Uses an attack roll</label>
