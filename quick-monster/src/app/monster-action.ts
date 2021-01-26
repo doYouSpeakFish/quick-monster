@@ -1,3 +1,5 @@
+import { Monster } from "./monster";
+
 export class MonsterAction {
 
     name: string = "";
@@ -15,5 +17,7 @@ export class MonsterAction {
     saveText: string = "";
     saveDamage: number = 50;
     saveType: string = "Con";
+
+    constructor(public monster: Monster) {}
 
 }
