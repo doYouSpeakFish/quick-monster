@@ -2,7 +2,7 @@
 <input id="name">
 
 <label for="challenge">CR </label>
-<select id="challenge">
+<select id="challenge" [(ngModel)]="monster.cr">
     <option *ngFor="let cr of monsterBases | keyvalue: unsorted" [value]="cr.key">{{ cr.key }}</option>
 </select>
 
@@ -15,69 +15,52 @@
     <legend>Str</legend>
     <span *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED">
         <label for="str-{{ abilityStrength }}">{{ abilityStrength | titlecase }}</label>
-        <input id="str-{{ abilityStrength }}"
-        type="radio"
-        name="str"
-        value="{{ abilityStrength }}"
-        [(ngModel)]="monster.strLevel">
+        <input id="str-{{ abilityStrength }}" type="radio" name="str" value="{{ abilityStrength }}"
+            [(ngModel)]="monster.strLevel">
     </span>
 </fieldset>
 <fieldset>
     <legend>Dex</legend>
     <span *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED">
         <label for="dex-{{ abilityStrength }}">{{ abilityStrength | titlecase }}</label>
-        <input id="dex-{{ abilityStrength }}"
-        type="radio"
-        name="dex"
-        value="{{ abilityStrength }}"
-        [(ngModel)]="monster.dexLevel">
+        <input id="dex-{{ abilityStrength }}" type="radio" name="dex" value="{{ abilityStrength }}"
+            [(ngModel)]="monster.dexLevel">
     </span>
 </fieldset>
 <fieldset>
     <legend>Con</legend>
     <span *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED">
         <label for="con-{{ abilityStrength }}">{{ abilityStrength | titlecase }}</label>
-        <input id="con-{{ abilityStrength }}"
-        type="radio"
-        name="dex"
-        value="{{ abilityStrength }}"
-        [(ngModel)]="monster.conLevel">
+        <input id="con-{{ abilityStrength }}" type="radio" name="dex" value="{{ abilityStrength }}"
+            [(ngModel)]="monster.conLevel">
     </span>
 </fieldset>
 <fieldset>
     <legend>Int</legend>
     <span *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED">
         <label for="int-{{ abilityStrength }}">{{ abilityStrength | titlecase }}</label>
-        <input id="int-{{ abilityStrength }}"
-        type="radio"
-        name="int"
-        value="{{ abilityStrength }}"
-        [(ngModel)]="monster.intLevel">
+        <input id="int-{{ abilityStrength }}" type="radio" name="int" value="{{ abilityStrength }}"
+            [(ngModel)]="monster.intLevel">
     </span>
 </fieldset>
 <fieldset>
     <legend>Wis</legend>
     <span *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED">
         <label for="wis-{{ abilityStrength }}">{{ abilityStrength | titlecase }}</label>
-        <input id="wis-{{ abilityStrength }}"
-        type="radio"
-        name="wis"
-        value="{{ abilityStrength }}"
-        [(ngModel)]="monster.wisLevel">
+        <input id="wis-{{ abilityStrength }}" type="radio" name="wis" value="{{ abilityStrength }}"
+            [(ngModel)]="monster.wisLevel">
     </span>
 </fieldset>
 <fieldset>
     <legend>Cha</legend>
     <span *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED">
         <label for="cha-{{ abilityStrength }}">{{ abilityStrength | titlecase }}</label>
-        <input id="cha-{{ abilityStrength }}"
-        type="radio"
-        name="cha"
-        value="{{ abilityStrength }}"
-        [(ngModel)]="monster.chaLevel">
+        <input id="cha-{{ abilityStrength }}" type="radio" name="cha" value="{{ abilityStrength }}"
+            [(ngModel)]="monster.chaLevel">
     </span>
 </fieldset>
 
+<!--TODO skill proficiencies-->
 
 <h2>Actions</h2>
 <div *ngFor="let action of monster.actions">
@@ -117,7 +100,11 @@
             </option>
         </select>
     </div>
+    <!--TODO multi attack number select menu-->
+    <!--TODO absolute damage multiplier select menu-->
     <button (click)="removeAction(action)">Remove Action</button>
 
 </div>
 <button (click)="addAction()">Add Action</button>
+
+<!--TODO display statblock-->

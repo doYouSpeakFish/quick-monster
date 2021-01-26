@@ -25,7 +25,9 @@ export class MonsterAction {
     saveDice: number = 3.5;
     saveNumDie: number = 1;
 
-    constructor(public monster: Monster, private monsterBases: Map<string, MonsterStatBase>) { }
+    constructor(public monster: Monster, private monsterBases: Map<string, MonsterStatBase>) {
+        monster.calcDice();
+    }
 
     // Attack getters and setters
     public get attack(): boolean {
@@ -33,10 +35,11 @@ export class MonsterAction {
     }
     public set attack(value: boolean) {
         this._attack = value;
+        this.monster.calcDice();
     }
     public set attackDamage(relativeDamage: number) {
         this._attackDamage = relativeDamage;
-        // TODO calculate dice and modifiers
+        this.monster.calcDice();
     }
     public get attackDamage() {
         if (this.attack) {
@@ -48,6 +51,7 @@ export class MonsterAction {
     // Saving throw getters and setters
     public set saveDamage(relativeDamage: number) {
         this._saveDamage = relativeDamage;
+        this.monster.calcDice();
     }
     public get saveDamage() {
         if (this.save) {
@@ -60,6 +64,7 @@ export class MonsterAction {
     }
     public set save(value: boolean) {
         this._save = value;
+        this.monster.calcDice();
     }
 
     // Other getters and setters
@@ -68,6 +73,7 @@ export class MonsterAction {
     }
     public set limitedUse(value: boolean) {
         this._limitedUse = value;
+        this.monster.calcDice();
     }
 
     public get multiTarget(): boolean {
@@ -75,6 +81,7 @@ export class MonsterAction {
     }
     public set multiTarget(value: boolean) {
         this._multiTarget = value;
+        this.monster.calcDice();
     }
 
     public get multiAttack(): number {
@@ -82,6 +89,7 @@ export class MonsterAction {
     }
     public set multiAttack(value: number) {
         this._multiAttack = value;
+        this.monster.calcDice();
     }
 
     public get totalDamage() {
@@ -94,10 +102,21 @@ export class MonsterAction {
         damage *= this._absoluteDamageMultiplier;
         if (this.limitedUse) { damage *= 4 }
         if (this.multiTarget) { damage *= 0.5 }
+
+        console.log("RECALC" + this.name + ": damage target = " + damage);
+
         let attackMultiplier = this.attackDamage / this.totalDamage;
         let saveMultiplier = this.saveDamage / this.totalDamage;
         this.calcAttackDamage(damage * attackMultiplier);
         this.calcSaveDamage(damage * saveMultiplier);
+
+        console.log(this.name + ": attack dice = " + this.attackNumDie + "d" + (this.attackDice * 2 - 1));
+        console.log(this.name + ": attack mod = " + this.attackDamageMod);
+        console.log(this.name + ": save dice = " + this.saveNumDie + "d" + (this.saveDice * 2 - 1));
+        let totalAverageDamage = this.attackNumDie * this.attackDice + this.attackDamageMod +
+            this.saveDice * this.saveNumDie;
+        console.log(this.name + ": average damage = " + (totalAverageDamage));
+        console.log(this.name + ": damage inaccuracy = " + Math.round(100 * totalAverageDamage / damage - 100) + "%");
     }
 
     private calcAttackDamage(damage: number): void {

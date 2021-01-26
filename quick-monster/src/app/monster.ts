@@ -23,7 +23,7 @@ export class Monster {
         STRENGTH_LEVELS.CORE_ABILITY
     ];
 
-    cr: string = "5";
+    private _cr: string = "5";
     ac: number;
     hp: number;
 
@@ -39,6 +39,14 @@ export class Monster {
     constructor(public monsterBases: Map<string, MonsterStatBase>) {
         this.ac = monsterBases.get(this.cr)!.ac;
         this.hp = monsterBases.get(this.cr)!.hp;
+    }
+
+    public get cr(): string {
+        return this._cr;
+    }
+    public set cr(value: string) {
+        this._cr = value;
+        this.calcDice();
     }
 
     addAction(): void {
