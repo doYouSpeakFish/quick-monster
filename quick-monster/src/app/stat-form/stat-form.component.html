@@ -9,70 +9,57 @@
 <label for="speed">Speed</label>
 <input id="speed">
 
-<!--TODO display ability score options using a table with headings instead of the labels-->
 <h2>Ability Scores</h2>
-<fieldset>
-    <legend>Str</legend>
-    <span *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED">
-        <label for="str-{{ abilityStrength }}">{{ abilityStrength | titlecase }}</label>
-        <input id="str-{{ abilityStrength }}" type="radio" name="str" value="{{ abilityStrength }}"
-            [(ngModel)]="monster.strLevel">
-    </span>
-</fieldset>
-<fieldset>
-    <legend>Dex</legend>
-    <span *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED">
-        <label for="dex-{{ abilityStrength }}">{{ abilityStrength | titlecase }}</label>
-        <input id="dex-{{ abilityStrength }}" type="radio" name="dex" value="{{ abilityStrength }}"
-            [(ngModel)]="monster.dexLevel">
-    </span>
-</fieldset>
-<fieldset>
-    <legend>Con</legend>
-    <span *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED">
-        <label for="con-{{ abilityStrength }}">{{ abilityStrength | titlecase }}</label>
-        <input id="con-{{ abilityStrength }}" type="radio" name="dex" value="{{ abilityStrength }}"
-            [(ngModel)]="monster.conLevel">
-    </span>
-</fieldset>
-<fieldset>
-    <legend>Int</legend>
-    <span *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED">
-        <label for="int-{{ abilityStrength }}">{{ abilityStrength | titlecase }}</label>
-        <input id="int-{{ abilityStrength }}" type="radio" name="int" value="{{ abilityStrength }}"
-            [(ngModel)]="monster.intLevel">
-    </span>
-</fieldset>
-<fieldset>
-    <legend>Wis</legend>
-    <span *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED">
-        <label for="wis-{{ abilityStrength }}">{{ abilityStrength | titlecase }}</label>
-        <input id="wis-{{ abilityStrength }}" type="radio" name="wis" value="{{ abilityStrength }}"
-            [(ngModel)]="monster.wisLevel">
-    </span>
-</fieldset>
-<fieldset>
-    <legend>Cha</legend>
-    <span *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED">
-        <label for="cha-{{ abilityStrength }}">{{ abilityStrength | titlecase }}</label>
-        <input id="cha-{{ abilityStrength }}" type="radio" name="cha" value="{{ abilityStrength }}"
-            [(ngModel)]="monster.chaLevel">
-    </span>
-</fieldset>
+<div>
+    <label for="str">Str: </label>
+    <select id="str" [(ngModel)]="monster.strLevel">
+        <option *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED" [value]="abilityStrength">{{ abilityStrength }}</option>
+    </select>
+</div>
+<div>
+    <label for="dex">Dex: </label>
+    <select id="dex" [(ngModel)]="monster.dexLevel">
+        <option *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED" [value]="abilityStrength">{{ abilityStrength }}</option>
+    </select>
+</div>
+<div>
+    <label for="con">Con: </label>
+    <select id="con" [(ngModel)]="monster.conLevel">
+        <option *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED" [value]="abilityStrength">{{ abilityStrength }}</option>
+    </select>
+</div>
+<div>
+    <label for="int">Int: </label>
+    <select id="int" [(ngModel)]="monster.intLevel">
+        <option *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED" [value]="abilityStrength">{{ abilityStrength }}</option>
+    </select>
+</div>
+<div>
+    <label for="wis">Wis: </label>
+    <select id="wis" [(ngModel)]="monster.wisLevel">
+        <option *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED" [value]="abilityStrength">{{ abilityStrength }}</option>
+    </select>
+</div>
+<div>
+    <label for="cha">Cha: </label>
+    <select id="cha" [(ngModel)]="monster.chaLevel">
+        <option *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED" [value]="abilityStrength">{{ abilityStrength }}</option>
+    </select>
+</div>
 
 <!--TODO skill proficiencies-->
 
 <h2>Actions</h2>
-<div *ngFor="let action of monster.actions">
+<fieldset *ngFor="let action of monster.actions">
     <label>Name</label>
-    <input type="text" [(ngModel)]="action.text">
+    <input type="text" [(ngModel)]="action.name">
     <label>Uses an attack roll</label>
     <input type="checkbox" id="isAttack" name="isAttack" value="isAttack" [(ngModel)]="action.attack">
     <label>Uses a saving throw</label>
     <input type="checkbox" id="isSave" name="isSave" value="isSave" [(ngModel)]="action.save">
     <div *ngIf="!action.attack && !action.save">
         <label for="action-text">Action Text</label>
-        <input type="text" id="action-text" [(ngModel)]="action.attackText">
+        <input type="text" id="action-text" [(ngModel)]="action.text">
     </div>
     <div *ngIf="action.attack || action.save">
         <label for="limitedUse">Limited Use</label>
@@ -83,28 +70,56 @@
     <div *ngIf="action.attack">
         <label>Attack Text (optional)</label>
         <input type="text" [(ngModel)]="action.attackText">
+
         <label for="attackRollDamage">Attack Roll Damage (relative)</label>
         <select id="attackRollDamage" [(ngModel)]="action.attackDamage">
             <option *ngFor="let i of damageModifier" [value]="i">
                 {{ i }}%
             </option>
         </select>
+
+        <label for="attack-die-size">Die size</label>
+        <select id="attack-die-size" [(ngModel)]="action.attackDice">
+            <option [value]=0>no dice</option>
+            <option *ngFor="let die of dice" [value]="die">d{{ die*2-1 }}</option>
+        </select>
+
+        <label for="attack-damage-type">Damage Type: </label>
+        <select id="attack-damage-type" [(ngModel)]="action.attackDamageType">
+            <option *ngFor="let damageType of monster.damageTypesOrder" [value]="damageType">{{ damageType }}</option>
+        </select>
     </div>
+
     <div *ngIf="action.save">
+        <!--TODO option for non damage saves-->
+        <!--TODO select save ability (str, dex, con, ...)-->
         <label>Save Text (optional)</label>
         <input type="text" [(ngModel)]="action.attackText">
+
         <label for="attackRollDamage">Save Damage (relative)</label>
         <select id="attackRollDamage" [(ngModel)]="action.saveDamage">
             <option *ngFor="let i of damageModifier" [value]="i">
                 {{ i }}%
             </option>
         </select>
+
+        <label for="save-die-size">Die size</label>
+        <select id="save-die-size" [(ngModel)]="action.saveDice">
+            <option *ngFor="let die of dice" [value]="die">d{{ die*2-1 }}</option>
+        </select>
     </div>
-    <!--TODO multi attack number select menu-->
+
+    <div>
+        <label for="multiAttack">Multiattack</label>
+        <select id="multiAttack" [(ngModel)]="action.multiAttack">
+            <option value=0>Not part of multiattack</option>
+            <option *ngFor="let numAttacks of multiAttacks" [value]="numAttacks">{{ numAttacks }}</option>
+        </select>
+    </div>
     <!--TODO absolute damage multiplier select menu-->
     <button (click)="removeAction(action)">Remove Action</button>
 
-</div>
+</fieldset>
 <button (click)="addAction()">Add Action</button>
 
 <!--TODO display statblock-->

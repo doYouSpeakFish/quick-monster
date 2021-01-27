@@ -10,6 +10,21 @@ enum STRENGTH_LEVELS {
     VERY_STRONG = "very strong",
     CORE_ABILITY = "core ability"
 }
+enum DAMAGE_TYPES_ENUM {
+    ACID = "acid",
+    BLUDGEONING = "bludgeoning",
+    COLD = "cold",
+    FIRE = "fire",
+    FORCE = "force",
+    LIGHTNING = "lightning",
+    NECROTIC = "necrotic",
+    PIERCING = "piercing",
+    POISON = "poison",
+    PSYCHIC = "psychic",
+    RADIANT = "radiant",
+    SLASHING = "slashing",
+    THUNDER = "thunder"
+}
 
 export class Monster {
 
@@ -22,6 +37,23 @@ export class Monster {
         STRENGTH_LEVELS.VERY_STRONG,
         STRENGTH_LEVELS.CORE_ABILITY
     ];
+    damageTypesOrder: DAMAGE_TYPES_ENUM[] = [
+        DAMAGE_TYPES_ENUM.ACID,
+        DAMAGE_TYPES_ENUM.BLUDGEONING,
+        DAMAGE_TYPES_ENUM.COLD,
+        DAMAGE_TYPES_ENUM.FIRE,
+        DAMAGE_TYPES_ENUM.FORCE,
+        DAMAGE_TYPES_ENUM.LIGHTNING,
+        DAMAGE_TYPES_ENUM.NECROTIC,
+        DAMAGE_TYPES_ENUM.PIERCING,
+        DAMAGE_TYPES_ENUM.POISON,
+        DAMAGE_TYPES_ENUM.PSYCHIC,
+        DAMAGE_TYPES_ENUM.RADIANT,
+        DAMAGE_TYPES_ENUM.SLASHING,
+        DAMAGE_TYPES_ENUM.THUNDER
+    ];
+
+    DAMAGE_TYPES = DAMAGE_TYPES_ENUM;
 
     private _cr: string = "5";
     ac: number;
@@ -59,23 +91,47 @@ export class Monster {
         if (i > -1) {
             this.actions.splice(i, 1);
         }
+        this.calcDice();
     }
 
     calcDice(): void {
-        let damage = this.monsterBases.get(this.cr)!.damage;
+        let targetTotalDamage = this.monsterBases.get(this.cr)!.damage;
         let multiAttackTotal = 0;
+        let numLimitedUseAttacks = 0;
+        let limitedUseMultiplier = 1;
+        let atWillMultiplier = 1;
         for (let action of this.actions) {
-            if (action.multiAttack) {
+            if (action.multiAttack != 0 && !action.limitedUse) {
                 multiAttackTotal += action.totalDamage;
             }
+            if (action.limitedUse) {
+                numLimitedUseAttacks += 1;
+            }
         }
+
+        // Scale limited use damage higher
+        // note that if there are three limited use attacks, they are not really limited use so are not adjusted
+        if (numLimitedUseAttacks == 1) {
+            limitedUseMultiplier = 1.5;
+            atWillMultiplier = 0.75;
+        } else if (numLimitedUseAttacks == 2) {
+            limitedUseMultiplier = 1.25;
+            atWillMultiplier = 0.5;
+        }
+
         for (let action of this.actions) {
             let multiplier = 1;
-            if (multiAttackTotal && action.multiAttack) {
+            if ((multiAttackTotal != 0) && (action.multiAttack != 0)) {
                 multiplier = action.totalDamage / multiAttackTotal;
             }
-            action.calcDamage(damage * multiplier);
+            if (action.limitedUse) {
+                multiplier *= limitedUseMultiplier;
+            } else {
+                multiplier *= atWillMultiplier;
+            }
+            action.calcDamage(targetTotalDamage * multiplier);
         }
+    
     }
 
 } 

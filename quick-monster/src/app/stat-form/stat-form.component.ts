@@ -13,6 +13,9 @@ export class StatFormComponent implements OnInit {
 
   monsterBases = new Map<string, MonsterStatBase>();
   damageModifier: number[] = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+  multiAttacks = [1, 2, 3, 4, 5, 6, 7, 8];
+  dice = [2.5, 3.5, 4.5, 5.5, 6.5, 10.5, 50.5];
+  saveAbilities = ["Str", "Dex", "Con", "Int", "Wis", "Cha"];
   monster: Monster;
 
   constructor() { 
