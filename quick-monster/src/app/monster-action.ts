@@ -6,6 +6,9 @@ export class MonsterAction {
     name: string = "";
     text: string = "";
 
+    // TODO allow reach to be adjusted
+    reach: string = "5";
+
     private _limitedUse: boolean = false;
     private _multiTarget: boolean = false;
     private _multiAttack: number = 0;
@@ -22,7 +25,7 @@ export class MonsterAction {
     private _save: boolean = false;
     saveText: string = "";
     private _saveDamage: number = 50;
-    saveType: string = "Con";
+    saveType: string = "Constitution";
     private _saveDice: number = 3.5;
     saveNumDie: number = 1;
     saveDamageType: string;
@@ -91,6 +94,13 @@ export class MonsterAction {
         this.monster.calcDice();
     }
 
+    public get saveDiceDisplay(): string {
+        return "(" + this.saveNumDie + "d" + (this.saveDice*2 -1) + ")";
+    }
+    public get saveAverageDamage(): number {
+        return Math.floor(this.saveNumDie*this.saveDice);
+    }
+
     // Other getters and setters
     public get limitedUse(): boolean {
         return this._limitedUse;
@@ -119,6 +129,28 @@ export class MonsterAction {
 
     public get totalDamage(): number {
         return this.totalAttackDamage + this.totalSaveDamage;
+    }
+
+    public get attackAverageDamage(): number {
+        let damage = this.attackNumDie * this.attackDice + this.attackDamageMod;
+        damage = Math.floor(damage);
+        return damage;
+    }
+
+    public get attackDiceDisplay(): string {
+        if (this.attackNumDie == 0) {
+            return "";
+        }
+        let display = "(" + this.attackNumDie + "d" + (this.attackDice*2 -1);
+        if (this.attackDamageMod != 0) {
+            if (this.attackDamageMod > 0) {
+                display += " + "
+            } else if (this.attackDamageMod < 0) {
+                display += " - "
+            }
+            display += String(Math.abs(this.attackDamageMod));
+        }
+        return display + ")";
     }
 
     // Dice and damage modifier calc

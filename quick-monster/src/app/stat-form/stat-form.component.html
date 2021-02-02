@@ -13,37 +13,43 @@
 <div>
     <label for="str">Str: </label>
     <select id="str" [(ngModel)]="monster.strLevel">
-        <option *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED" [value]="abilityStrength">{{ abilityStrength }}</option>
+        <option *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED" [value]="abilityStrength">{{
+            abilityStrength }}</option>
     </select>
 </div>
 <div>
     <label for="dex">Dex: </label>
     <select id="dex" [(ngModel)]="monster.dexLevel">
-        <option *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED" [value]="abilityStrength">{{ abilityStrength }}</option>
+        <option *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED" [value]="abilityStrength">{{
+            abilityStrength }}</option>
     </select>
 </div>
 <div>
     <label for="con">Con: </label>
     <select id="con" [(ngModel)]="monster.conLevel">
-        <option *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED" [value]="abilityStrength">{{ abilityStrength }}</option>
+        <option *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED" [value]="abilityStrength">{{
+            abilityStrength }}</option>
     </select>
 </div>
 <div>
     <label for="int">Int: </label>
     <select id="int" [(ngModel)]="monster.intLevel">
-        <option *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED" [value]="abilityStrength">{{ abilityStrength }}</option>
+        <option *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED" [value]="abilityStrength">{{
+            abilityStrength }}</option>
     </select>
 </div>
 <div>
     <label for="wis">Wis: </label>
     <select id="wis" [(ngModel)]="monster.wisLevel">
-        <option *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED" [value]="abilityStrength">{{ abilityStrength }}</option>
+        <option *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED" [value]="abilityStrength">{{
+            abilityStrength }}</option>
     </select>
 </div>
 <div>
     <label for="cha">Cha: </label>
     <select id="cha" [(ngModel)]="monster.chaLevel">
-        <option *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED" [value]="abilityStrength">{{ abilityStrength }}</option>
+        <option *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED" [value]="abilityStrength">{{
+            abilityStrength }}</option>
     </select>
 </div>
 
@@ -123,3 +129,20 @@
 <button (click)="addAction()">Add Action</button>
 
 <!--TODO display statblock-->
+<div>
+    <div>
+        <p><b>Target damage per round: </b>{{ monster.targetDamage }}</p>
+    </div>
+    <div *ngFor="let action of monster.actions">
+        <p><b>{{ action.name | titlecase }}.</b><span *ngIf="action.attack">
+                +{{ monster.toHit }} to hit, reach {{ action.reach }} ft.,
+                one target. Hit: {{ action.attackAverageDamage }} {{ action.attackDiceDisplay }}
+                {{ action.attackDamageType }} damage. {{ action.attackText }}
+            </span>
+            <span *ngIf="action.save">
+                The target must succeed on a DC{{ monster.dc }} {{ action.saveType | titlecase }} saving throw or take
+                {{ action.saveAverageDamage }} {{ action.saveDiceDisplay }} {{ action.saveDamageType }} damage. {{ action.saveText }}
+            </span>
+        </p>
+    </div>
+</div>

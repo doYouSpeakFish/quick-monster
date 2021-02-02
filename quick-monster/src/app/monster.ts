@@ -56,8 +56,11 @@ export class Monster {
     DAMAGE_TYPES = DAMAGE_TYPES_ENUM;
 
     private _cr: string = "5";
-    ac: number;
-    hp: number;
+    targetDamage: number = 0;
+    ac?: number;
+    hp?: number;
+    toHit?: number;
+    dc?: number;
 
     strLevel: string = STRENGTH_LEVELS.VERY_STRONG;
     dexLevel: string = STRENGTH_LEVELS.AVERAGE;
@@ -69,8 +72,16 @@ export class Monster {
     actions: MonsterAction[] = [];
 
     constructor(public monsterBases: Map<string, MonsterStatBase>) {
-        this.ac = monsterBases.get(this.cr)!.ac;
-        this.hp = monsterBases.get(this.cr)!.hp;
+        this.update();
+    }
+
+    private update(): void {
+        this.ac = this.monsterBases.get(this.cr)!.ac;
+        this.hp = this.monsterBases.get(this.cr)!.hp;
+        this.toHit = this.monsterBases.get(this.cr)!.attack;
+        this.targetDamage = this.monsterBases.get(this.cr)!.damage;
+        this.dc = this.monsterBases.get(this.cr)!.dc;
+        this.calcDice();
     }
 
     public get cr(): string {
@@ -78,7 +89,7 @@ export class Monster {
     }
     public set cr(value: string) {
         this._cr = value;
-        this.calcDice();
+        this.update();
     }
 
     addAction(): void {
@@ -129,8 +140,26 @@ export class Monster {
             } else {
                 multiplier *= atWillMultiplier;
             }
+            // TODO cap max damage
             action.calcDamage(targetTotalDamage * multiplier);
         }
+
+        // Calc actual monster damage.
+        // make a priority queue for actions ordered by their damage
+        // 1. calc damage done by each regular at will actions and add to queue
+        // 2. calc damage done by at will multi-attack actions. add to Q
+        // 3. calc damage done by limited use actions that are part of multi-attack + at will multi-attack. add to Q
+        // 4. calc damage done by limited use actions that are not part of multi-attack. add to Q
+        // then calc first three round damage by using the highest damage action each round. pop limited use from the Q if used
+        //
+        // when legendary actions are added, this will need to have a second Q for legendary actions.
+        // 
+        // damage should be capped for each action to avoid one hit kills. how to do this for multi-attack?
+        //
+        // damage should be normalized so that total three round damage equals target three round damage
+        // should action damage be capped before adding up total damage?
+        // no. this avoids 3 round damage being too high. it might be too low when some actions are capped, but this is better.
+        // perhaps add a display to show how the actual damage lines up with the target damage.
     
     }
 
