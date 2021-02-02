@@ -3,11 +3,13 @@ import { Monster } from "./monster";
 
 export class MonsterAction {
 
-    name: string = "";
+    name: string = "Action";
     text: string = "";
 
     // TODO allow reach to be adjusted
     reach: string = "5";
+
+    hidden: boolean = false;
 
     private _limitedUse: boolean = false;
     private _multiTarget: boolean = false;
@@ -205,6 +207,10 @@ export class MonsterAction {
             let damagePerAttack = damage / Math.max(1, this.multiAttack);
             this.saveNumDie = Math.round(damagePerAttack / this.saveDice);
         }
+    }
+
+    public toggleVisible() {
+        this.hidden = !this.hidden;
     }
 
 }

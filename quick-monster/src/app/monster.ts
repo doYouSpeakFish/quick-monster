@@ -1,3 +1,4 @@
+import { PipeTransform, Pipe } from "@angular/core";
 import { MonsterStatBase } from "./metrics";
 import { MonsterAction } from "./monster-action";
 
@@ -57,23 +58,120 @@ export class Monster {
 
     private _cr: string = "5";
     targetDamage: number = 0;
-    ac?: number;
-    hp?: number;
-    toHit?: number;
-    dc?: number;
+    ac: number;
+    hp: number;
+    toHit: number;
+    dc: number;
+    save: number;
+    proficiency: number;
+    speed: string = "30";
     private _name: string = "Monster";
 
-    strLevel: string = STRENGTH_LEVELS.VERY_STRONG;
-    dexLevel: string = STRENGTH_LEVELS.AVERAGE;
-    conLevel: string = STRENGTH_LEVELS.STRONG;
-    intLevel: string = STRENGTH_LEVELS.WEAK;
-    wisLevel: string = STRENGTH_LEVELS.AVERAGE;
-    chaLevel: string = STRENGTH_LEVELS.AVERAGE;
+    private _strLevel: STRENGTH_LEVELS = STRENGTH_LEVELS.CORE_ABILITY;
+    private _dexLevel: STRENGTH_LEVELS = STRENGTH_LEVELS.AVERAGE;
+    private _conLevel: STRENGTH_LEVELS = STRENGTH_LEVELS.STRONG;
+    private _intLevel: STRENGTH_LEVELS = STRENGTH_LEVELS.WEAK;
+    private _wisLevel: STRENGTH_LEVELS = STRENGTH_LEVELS.AVERAGE;
+    private _chaLevel: STRENGTH_LEVELS = STRENGTH_LEVELS.AVERAGE;
+
+    strScore: number = 10;
+    dexScore: number = 10;
+    conScore: number = 10;
+    intScore: number = 10;
+    wisScore: number = 10;
+    chaScore: number = 10;
+
+    // Ability level getters and setters
+    public get strLevel(): STRENGTH_LEVELS {
+        return this._strLevel;
+    }
+    public set strLevel(value: STRENGTH_LEVELS) {
+        this._strLevel = value;
+        this.update();
+    }
+
+    public get dexLevel(): STRENGTH_LEVELS {
+        return this._dexLevel;
+    }
+    public set dexLevel(value: STRENGTH_LEVELS) {
+        this._dexLevel = value;
+        this.update();
+    }
+
+    public get conLevel(): STRENGTH_LEVELS {
+        return this._conLevel;
+    }
+    public set conLevel(value: STRENGTH_LEVELS) {
+        this._conLevel = value;
+        this.update();
+    }
+
+    public get intLevel(): STRENGTH_LEVELS {
+        return this._intLevel;
+    }
+    public set intLevel(value: STRENGTH_LEVELS) {
+        this._intLevel = value;
+        this.update();
+    }
+
+    public get wisLevel(): STRENGTH_LEVELS {
+        return this._wisLevel;
+    }
+    public set wisLevel(value: STRENGTH_LEVELS) {
+        this._wisLevel = value;
+        this.update();
+    }
+
+    public get chaLevel(): STRENGTH_LEVELS {
+        return this._chaLevel;
+    }
+    public set chaLevel(value: STRENGTH_LEVELS) {
+        this._chaLevel = value;
+        this.update();
+    }
+
+    public calcAbilityMod(score: number) {
+        return Math.floor((score - 10)/2)
+    }
+
+    private calcAbilityScore(level: STRENGTH_LEVELS): number {
+        // TODO ability scores are calculating strangley as proficiency doesn't scale a the same time as save
+        let coreAbilityScore: number = Math.max(11, (this.save - this.proficiency)*2 + 12);
+        switch (level) {
+            case STRENGTH_LEVELS.EXTREMELY_WEAK:
+                return 2;
+            case STRENGTH_LEVELS.VERY_WEAK:
+                return 4;
+            case STRENGTH_LEVELS.WEAK:
+                return 8;
+            case STRENGTH_LEVELS.AVERAGE:
+                return 10;
+            case STRENGTH_LEVELS.STRONG:
+                return Math.round(10 + (coreAbilityScore-10)/3)
+            case STRENGTH_LEVELS.VERY_STRONG:
+                return Math.round(10 + 2*(coreAbilityScore-10)/3)
+            case STRENGTH_LEVELS.CORE_ABILITY:
+                return coreAbilityScore;
+        }
+    }
 
     actions: MonsterAction[] = [];
 
     constructor(public monsterBases: Map<string, MonsterStatBase>) {
-        this.update();
+        this.ac = this.monsterBases.get(this.cr)!.ac;
+        this.hp = this.monsterBases.get(this.cr)!.hp;
+        this.toHit = this.monsterBases.get(this.cr)!.attack;
+        this.targetDamage = this.monsterBases.get(this.cr)!.damage;
+        this.dc = this.monsterBases.get(this.cr)!.dc;
+        this.save = this.monsterBases.get(this.cr)!.save;
+        this.proficiency = this.monsterBases.get(this.cr)!.proficiency;
+        this.strLevel = STRENGTH_LEVELS.CORE_ABILITY;
+        this.dexLevel = STRENGTH_LEVELS.AVERAGE;
+        this.conLevel = STRENGTH_LEVELS.STRONG;
+        this.intLevel = STRENGTH_LEVELS.WEAK;
+        this.wisLevel = STRENGTH_LEVELS.AVERAGE;
+        this.chaLevel = STRENGTH_LEVELS.AVERAGE;
+        this.calcDice();
     }
 
     private update(): void {
@@ -82,6 +180,14 @@ export class Monster {
         this.toHit = this.monsterBases.get(this.cr)!.attack;
         this.targetDamage = this.monsterBases.get(this.cr)!.damage;
         this.dc = this.monsterBases.get(this.cr)!.dc;
+        this.save = this.monsterBases.get(this.cr)!.save;
+        this.proficiency = this.monsterBases.get(this.cr)!.proficiency;
+        this.chaScore = this.calcAbilityScore(this.chaLevel);
+        this.wisScore = this.calcAbilityScore(this.wisLevel);
+        this.intScore = this.calcAbilityScore(this.intLevel);
+        this.conScore = this.calcAbilityScore(this.conLevel);
+        this.dexScore = this.calcAbilityScore(this.dexLevel);
+        this.strScore = this.calcAbilityScore(this.strLevel);
         this.calcDice();
     }
 
@@ -198,4 +304,12 @@ export class Monster {
 export interface Multiattack {
     name: string;
     attackCount: number;
+}
+
+@Pipe({name: 'signedNumber'})
+export class SignedNumberPipe implements PipeTransform {
+    transform(value: number): string {
+        return value < 0 ? String(value) : "+" + String(value);
+    }
+
 }

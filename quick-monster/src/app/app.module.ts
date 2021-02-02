@@ -5,11 +5,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { StatFormComponent } from './stat-form/stat-form.component';
 import { FormsModule } from '@angular/forms';
+import { SignedNumberPipe } from './monster';
 
 @NgModule({
   declarations: [
     AppComponent,
-    StatFormComponent
+    StatFormComponent,
+    SignedNumberPipe
   ],
   imports: [
     BrowserModule,
@@ -17,6 +19,9 @@ import { FormsModule } from '@angular/forms';
     FormsModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  exports: [
+    SignedNumberPipe
+  ]
 })
 export class AppModule { }
