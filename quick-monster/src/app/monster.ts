@@ -61,6 +61,7 @@ export class Monster {
     hp?: number;
     toHit?: number;
     dc?: number;
+    private _name: string = "Monster";
 
     strLevel: string = STRENGTH_LEVELS.VERY_STRONG;
     dexLevel: string = STRENGTH_LEVELS.AVERAGE;
@@ -84,12 +85,41 @@ export class Monster {
         this.calcDice();
     }
 
+    public multiattackCount(): number {
+        let count: number = 0;
+        for (let action of this.actions) {
+            count += Number(action.multiAttack);
+        }
+        return count;
+    }
+
+    public getMultiAttackList(): Multiattack[] {
+        let attacks: Multiattack[] = [];
+        for (let action of this.actions) {
+            if (action.multiAttack > 0) {
+                let multiattack: Multiattack = {
+                    name: action.name,
+                    attackCount: action.multiAttack
+                }
+                attacks.push(multiattack)
+            }
+        }
+        return attacks;
+    }
+
     public get cr(): string {
         return this._cr;
     }
     public set cr(value: string) {
         this._cr = value;
         this.update();
+    }
+
+    public get name(): string {
+        return this._name;
+    }
+    public set name(value: string) {
+        this._name = value;
     }
 
     addAction(): void {
@@ -163,4 +193,9 @@ export class Monster {
     
     }
 
-} 
+}
+
+export interface Multiattack {
+    name: string;
+    attackCount: number;
+}

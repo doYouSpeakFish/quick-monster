@@ -1,5 +1,5 @@
 <label for="name">Name </label>
-<input id="name">
+<input id="name" [(ngModel)]="monster.name">
 
 <label for="challenge">CR </label>
 <select id="challenge" [(ngModel)]="monster.cr">
@@ -132,6 +132,17 @@
 <div>
     <div>
         <p><b>Target damage per round: </b>{{ monster.targetDamage }}</p>
+    </div>
+    <div *ngIf="monster.multiattackCount() > 1">
+        <b>Multiattack.</b> The {{ monster.name }} makes {{ monster.multiattackCount() | number }}
+        attacks<span *ngIf="monster.getMultiAttackList().length > 1">: </span>
+        <span *ngFor="let attack of monster.getMultiAttackList(); let last = last; let first = first;">
+            <span *ngIf="first && last"> with its {{ attack.name }}</span>
+            <span *ngIf="last && !first"> and </span>
+            <span *ngIf="!last && !first">, </span>
+            <span *ngIf="!(first && last)">{{ attack.attackCount }} with its {{ attack.name }}</span>
+            <span *ngIf="last">.</span>
+        </span>
     </div>
     <div *ngFor="let action of monster.actions">
         <p><b>{{ action.name | titlecase }}.</b><span *ngIf="action.attack">
