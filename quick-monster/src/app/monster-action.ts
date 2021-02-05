@@ -162,21 +162,10 @@ export class MonsterAction {
         damage *= this._absoluteDamageMultiplier;
         if (this.multiTarget) { damage *= 0.5 }
 
-        console.log("RECALC " + this.name + ": damage target = " + damage);
-
         let attackMultiplier = this.totalAttackDamage / this.totalDamage;
         let saveMultiplier = this.totalSaveDamage / this.totalDamage;
         this.calcAttackDamage(damage * attackMultiplier);
         this.calcSaveDamage(damage * saveMultiplier);
-
-        let attackDieString = this.attackDice == 0 ? 0 : this.attackDice*2 - 1;
-        console.log(this.name + ": attack dice = " + this.attackNumDie + "d" + attackDieString);
-        console.log(this.name + ": attack mod = " + this.attackDamageMod);
-        console.log(this.name + ": save dice = " + this.saveNumDie + "d" + (this.saveDice * 2 - 1));
-        let totalAverageDamage = (this.attackNumDie * this.attackDice + this.attackDamageMod +
-            this.saveDice * this.saveNumDie) * Math.max(1, this.multiAttack);
-        console.log(this.name + ": average damage = " + (totalAverageDamage));
-        console.log(this.name + ": damage inaccuracy = " + Math.round(100 * totalAverageDamage / damage - 100) + "%");
     }
 
     private calcAttackDamage(damage: number): void {

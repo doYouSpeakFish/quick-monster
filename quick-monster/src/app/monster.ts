@@ -242,6 +242,7 @@ export class Monster {
     }
 
     calcDice(): void {
+        console.log("\nMonster: calculating action damages...")
         let targetTotalDamage = this.monsterBases.get(this.cr)!.damage;
         let multiAttackTotal = 0;
         let numLimitedUseAttacks = 0;
@@ -267,6 +268,7 @@ export class Monster {
             atWillMultiplier = 0.5;
         }
 
+        let actionsTargetDamage: {monsterAction: MonsterAction, damage: number}[] = [];
         for (let action of this.actions) {
             let multiplier = 1;
             if ((multiAttackTotal != 0) && (action.multiAttack != 0)) {
@@ -279,8 +281,21 @@ export class Monster {
             }
             // TODO cap max damage
             action.calcDamage(targetTotalDamage * multiplier);
+            actionsTargetDamage.push({monsterAction: action, damage: targetTotalDamage * multiplier});
         }
 
+        // Normalize the action damages so the actual three round damage equals the target three round damage
+        let targetDmg3rounds = targetTotalDamage*3;
+        let dmgNormalizer = targetDmg3rounds / this.threeRoundDamage();
+        console.log("Monster: renormalizing damage...");
+        for (let action of actionsTargetDamage) {
+            action.monsterAction.calcDamage(action.damage * dmgNormalizer);
+        }
+        console.log("Monster: target avg dmg over three rounds = " + targetDmg3rounds);
+        this.threeRoundDamage();
+    }
+
+    threeRoundDamage(): number {
         let atWillMultiattackDamage: number = 0;
         let limitedMultiAttackDamage: number = 0;
         let actionsActualDamage: {monsterAction: MonsterAction, damage: number}[] = [];
@@ -313,7 +328,6 @@ export class Monster {
                 multiAttackDamage += limitedMultiAttackDamage;
                 limitedMultiAttackUsed = true;
             }
-            console.log("Monster: multiattack damage = " + multiAttackDamage);
 
             if (actionsActualDamage.length == 0) {
                 // multi attack options are only ones available
@@ -344,7 +358,7 @@ export class Monster {
             }
         }
         console.log("Monster: avg dmg over three rounds = " + actualDamage);
-    
+        return actualDamage;
     }
 
 }
