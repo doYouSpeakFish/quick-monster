@@ -256,8 +256,9 @@ export class Monster {
             }
         }
 
-        // Scale limited use damage higher
+        // Scale up damage for limited use options
         // note that if there are three limited use attacks, they are not really limited use so are not adjusted
+        // This code might not be necessary with damage normalization code
         if (numLimitedUseAttacks == 1) {
             limitedUseMultiplier = 1.5;
             atWillMultiplier = 0.75;
@@ -284,12 +285,16 @@ export class Monster {
         let limitedMultiAttackDamage: number = 0;
         let actionsActualDamage: {monsterAction: MonsterAction, damage: number}[] = [];
         for (let action of this.actions) {
-            let dmg = action.attackAverageDamage + action.saveAverageDamage;
+            let dmg: number = action.attackAverageDamage + action.saveAverageDamage;
+            if (action.multiTarget) {
+                // assume multi target attacks hit two creatures
+                dmg *= 2;
+            }
             if (action.multiAttack > 0) {
                 if (action.limitedUse) {
-                    limitedMultiAttackDamage += dmg;
+                    limitedMultiAttackDamage += dmg * action.multiAttack;
                 } else {
-                    atWillMultiattackDamage += dmg;
+                    atWillMultiattackDamage += dmg * action.multiAttack;
                 }
             } else {
                 actionsActualDamage.push({monsterAction: action, damage: dmg});
@@ -297,54 +302,48 @@ export class Monster {
         }
 
         // Calc damage over first three rounds of combat by choosing max damage option during each round
-        let actualDamage = 0;
+        // Assumes that limited use actions can only be done once in the first three rounds.
+        // TODO assume multi target attacks hit two characters and so do double the listed damage
+        let actualDamage = 0; // Actual damage over first three rounds of combat
         let limitedMultiAttackUsed = false;
         for (let i=0; i<3; i++) {
-            if (actionsActualDamage.length > 0) {
-                let maxAction: {monsterAction: MonsterAction, damage: number} = actionsActualDamage[0];
-                for (let action of actionsActualDamage) {
-                    if (action.damage > maxAction.damage) {
-                        maxAction = action;
-                    }
-                }
-                if (maxAction.damage > atWillMultiattackDamage) {
-                    if (limitedMultiAttackUsed || maxAction.damage > atWillMultiattackDamage + limitedMultiAttackDamage) {
-                        actualDamage += maxAction.damage;
-                        if (maxAction.monsterAction.limitedUse) {
-                            let index = actionsActualDamage.indexOf(maxAction);
-                            if (index > -1) {
-                                actionsActualDamage.splice(index, 1);
-                            }
-                        }
-                    } else {
-                        actualDamage += atWillMultiattackDamage + limitedMultiAttackDamage;
-                        limitedMultiAttackUsed = true;
-                    }
-                } else if(limitedMultiAttackUsed) {
-                    actualDamage += atWillMultiattackDamage;
-                } else {
-                    actualDamage += atWillMultiattackDamage + limitedMultiAttackDamage;
-                    limitedMultiAttackUsed = true;
+
+            let multiAttackDamage = atWillMultiattackDamage;
+            if (!limitedMultiAttackUsed) {
+                multiAttackDamage += limitedMultiAttackDamage;
+                limitedMultiAttackUsed = true;
+            }
+            console.log("Monster: multiattack damage = " + multiAttackDamage);
+
+            if (actionsActualDamage.length == 0) {
+                // multi attack options are only ones available
+                actualDamage += multiAttackDamage;
+                continue;
+            }
+
+            // Find max damage action that is not part of multi attack
+            let maxAction: {monsterAction: MonsterAction, damage: number} = actionsActualDamage[0];
+            for (let action of actionsActualDamage) {
+                if (action.damage > maxAction.damage) {
+                    maxAction = action;
                 }
             }
+            if (maxAction.damage > multiAttackDamage) {
+                // multiattack is not the best option, action already selected is better
+                actualDamage += maxAction.damage;
+                if (maxAction.monsterAction.limitedUse) {
+                    // action cannot be used again, so remove it from the list
+                    let index = actionsActualDamage.indexOf(maxAction);
+                    if (index > -1) {
+                        actionsActualDamage.splice(index, 1);
+                    }
+                }
+            } else {
+                // multiattack is the best option
+                actualDamage += multiAttackDamage;
+            }
         }
-
-        // Calc actual monster damage.
-        // make a priority queue for actions ordered by their damage
-        // 1. calc damage done by each regular at will actions and add to queue
-        // 2. calc damage done by at will multi-attack actions. add to Q
-        // 3. calc damage done by limited use actions that are part of multi-attack + at will multi-attack. add to Q
-        // 4. calc damage done by limited use actions that are not part of multi-attack. add to Q
-        // then calc first three round damage by using the highest damage action each round. pop limited use from the Q if used
-        //
-        // when legendary actions are added, this will need to have a second Q for legendary actions.
-        // 
-        // damage should be capped for each action to avoid one hit kills. how to do this for multi-attack?
-        //
-        // damage should be normalized so that total three round damage equals target three round damage
-        // should action damage be capped before adding up total damage?
-        // no. this avoids 3 round damage being too high. it might be too low when some actions are capped, but this is better.
-        // perhaps add a display to show how the actual damage lines up with the target damage.
+        console.log("Monster: avg dmg over three rounds = " + actualDamage);
     
     }
 

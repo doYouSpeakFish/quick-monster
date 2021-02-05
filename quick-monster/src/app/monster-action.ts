@@ -124,13 +124,14 @@ export class MonsterAction {
         return this._multiAttack;
     }
     public set multiAttack(value: number) {
-        console.log("multiattack = " + value)
         this._multiAttack = value;
         this.monster.calcDice();
     }
 
     public get totalDamage(): number {
-        return this.totalAttackDamage + this.totalSaveDamage;
+        let dmg = this.totalAttackDamage + this.totalSaveDamage;
+        
+        return dmg;
     }
 
     public get attackAverageDamage(): number {
