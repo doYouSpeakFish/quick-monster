@@ -280,6 +280,55 @@ export class Monster {
             action.calcDamage(targetTotalDamage * multiplier);
         }
 
+        let atWillMultiattackDamage: number = 0;
+        let limitedMultiAttackDamage: number = 0;
+        let actionsActualDamage: {monsterAction: MonsterAction, damage: number}[] = [];
+        for (let action of this.actions) {
+            let dmg = action.attackAverageDamage + action.saveAverageDamage;
+            if (action.multiAttack > 0) {
+                if (action.limitedUse) {
+                    limitedMultiAttackDamage += dmg;
+                } else {
+                    atWillMultiattackDamage += dmg;
+                }
+            } else {
+                actionsActualDamage.push({monsterAction: action, damage: dmg});
+            }
+        }
+
+        // Calc damage over first three rounds of combat by choosing max damage option during each round
+        let actualDamage = 0;
+        let limitedMultiAttackUsed = false;
+        for (let i=0; i<3; i++) {
+            if (actionsActualDamage.length > 0) {
+                let maxAction: {monsterAction: MonsterAction, damage: number} = actionsActualDamage[0];
+                for (let action of actionsActualDamage) {
+                    if (action.damage > maxAction.damage) {
+                        maxAction = action;
+                    }
+                }
+                if (maxAction.damage > atWillMultiattackDamage) {
+                    if (limitedMultiAttackUsed || maxAction.damage > atWillMultiattackDamage + limitedMultiAttackDamage) {
+                        actualDamage += maxAction.damage;
+                        if (maxAction.monsterAction.limitedUse) {
+                            let index = actionsActualDamage.indexOf(maxAction);
+                            if (index > -1) {
+                                actionsActualDamage.splice(index, 1);
+                            }
+                        }
+                    } else {
+                        actualDamage += atWillMultiattackDamage + limitedMultiAttackDamage;
+                        limitedMultiAttackUsed = true;
+                    }
+                } else if(limitedMultiAttackUsed) {
+                    actualDamage += atWillMultiattackDamage;
+                } else {
+                    actualDamage += atWillMultiattackDamage + limitedMultiAttackDamage;
+                    limitedMultiAttackUsed = true;
+                }
+            }
+        }
+
         // Calc actual monster damage.
         // make a priority queue for actions ordered by their damage
         // 1. calc damage done by each regular at will actions and add to queue
