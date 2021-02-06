@@ -58,6 +58,7 @@ export class Monster {
 
     private _cr: string = "5";
     targetDamage: number = 0;
+    averageDamagePerRound: number = 0;
     ac: number;
     hp: number;
     toHit: number;
@@ -286,7 +287,7 @@ export class Monster {
 
         // Normalize the action damages so the actual three round damage equals the target three round damage
         let targetDmg3rounds = targetTotalDamage*3;
-        let dmgNormalizer = targetDmg3rounds / this.threeRoundDamage();
+        let dmgNormalizer = targetDmg3rounds / Math.max(1, this.threeRoundDamage());
         console.log("Monster: renormalizing damage...");
         for (let action of actionsTargetDamage) {
             action.monsterAction.calcDamage(action.damage * dmgNormalizer);
@@ -318,7 +319,6 @@ export class Monster {
 
         // Calc damage over first three rounds of combat by choosing max damage option during each round
         // Assumes that limited use actions can only be done once in the first three rounds.
-        // TODO assume multi target attacks hit two characters and so do double the listed damage
         let actualDamage = 0; // Actual damage over first three rounds of combat
         let limitedMultiAttackUsed = false;
         for (let i=0; i<3; i++) {
@@ -357,7 +357,7 @@ export class Monster {
                 actualDamage += multiAttackDamage;
             }
         }
-        console.log("Monster: avg dmg over three rounds = " + actualDamage);
+        this.averageDamagePerRound = Math.round(actualDamage / 3);
         return actualDamage;
     }
 
