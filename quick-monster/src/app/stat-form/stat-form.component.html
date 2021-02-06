@@ -1,0 +1,224 @@
+<label for="name">Name </label>
+<input id="name" [(ngModel)]="monster.name">
+
+<label for="challenge">CR </label>
+<select id="challenge" [(ngModel)]="monster.cr">
+    <option *ngFor="let cr of monsterBases | keyvalue: unsorted" [value]="cr.key">{{ cr.key }}</option>
+</select>
+
+<label for="speed">Speed</label>
+<input id="speed" [(ngModel)]="monster.speed">
+
+<label for="damage-scaler">Scale damage output higher or lower</label>
+<select id="damage-scaler" [(ngModel)]="monster.damageScaler">
+    <option *ngFor="let damageScaler of monster.scalerOptions" [value]="damageScaler">
+        {{ damageScaler | signedNumber }}%
+    </option>
+</select>
+
+<label for="hp-scaler">Scale hit points higher or lower</label>
+<select id="hp-scaler" [(ngModel)]="monster.hpScaler">
+    <option *ngFor="let hpScaler of monster.scalerOptions" [value]="hpScaler">
+        {{ hpScaler | signedNumber }}%
+    </option>
+</select>
+
+<div>
+    <h2>Ability Scores</h2>
+    <div>
+        <label for="str">Str: </label>
+        <select id="str" [(ngModel)]="monster.strLevel">
+            <option *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED" [value]="abilityStrength">{{
+                abilityStrength }}</option>
+        </select>
+    </div>
+    <div>
+        <label for="dex">Dex: </label>
+        <select id="dex" [(ngModel)]="monster.dexLevel">
+            <option *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED" [value]="abilityStrength">{{
+                abilityStrength }}</option>
+        </select>
+    </div>
+    <div>
+        <label for="con">Con: </label>
+        <select id="con" [(ngModel)]="monster.conLevel">
+            <option *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED" [value]="abilityStrength">{{
+                abilityStrength }}</option>
+        </select>
+    </div>
+    <div>
+        <label for="int">Int: </label>
+        <select id="int" [(ngModel)]="monster.intLevel">
+            <option *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED" [value]="abilityStrength">{{
+                abilityStrength }}</option>
+        </select>
+    </div>
+    <div>
+        <label for="wis">Wis: </label>
+        <select id="wis" [(ngModel)]="monster.wisLevel">
+            <option *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED" [value]="abilityStrength">{{
+                abilityStrength }}</option>
+        </select>
+    </div>
+    <div>
+        <label for="cha">Cha: </label>
+        <select id="cha" [(ngModel)]="monster.chaLevel">
+            <option *ngFor="let abilityStrength of monster.STRENGTH_LEVELS_ORDERED" [value]="abilityStrength">{{
+                abilityStrength }}</option>
+        </select>
+    </div>
+</div>
+
+<!--TODO skill proficiencies-->
+
+<h2>Actions</h2>
+<fieldset *ngFor="let action of monster.actions">
+    <a (click)="action.toggleVisible()"><h2>{{ action.name }}</h2></a>
+    <div *ngIf="!action.hidden">
+        <label for="name">Name</label>
+        <input id="name" type="text" [(ngModel)]="action.name">
+        <label for="reach">Reach</label>
+        <input id="reach" type="text" [(ngModel)]="action.reach">
+        <label>Uses an attack roll</label>
+        <input type="checkbox" id="isAttack" name="isAttack" value="isAttack" [(ngModel)]="action.attack">
+        <label>Uses a saving throw</label>
+        <input type="checkbox" id="isSave" name="isSave" value="isSave" [(ngModel)]="action.save">
+        <div *ngIf="!action.attack && !action.save">
+            <label for="action-text">Action Text</label>
+            <input type="text" id="action-text" [(ngModel)]="action.text">
+        </div>
+        <div *ngIf="action.attack || action.save">
+            <label for="limitedUse">Limited Use</label>
+            <input type="checkbox" id="limitedUse" name="limitedUse" value="limitedUse" [(ngModel)]="action.limitedUse">
+            <label for="multiTarget">Multi-target</label>
+            <input type="checkbox" id="multiTarget" name="multiTarget" value="multiTarget"
+                [(ngModel)]="action.multiTarget">
+        </div>
+        <div *ngIf="action.attack">
+            <label>Attack Text (optional)</label>
+            <input type="text" [(ngModel)]="action.attackText">
+
+            <label for="attackRollDamage">Attack Roll Damage (relative)</label>
+            <select id="attackRollDamage" [(ngModel)]="action.attackDamage">
+                <option *ngFor="let i of damageModifier" [value]="i">
+                    {{ i }}%
+                </option>
+            </select>
+
+            <label for="attack-die-size">Die size</label>
+            <select id="attack-die-size" [(ngModel)]="action.attackDice">
+                <option [value]=0>no dice</option>
+                <option *ngFor="let die of dice" [value]="die">d{{ die*2-1 }}</option>
+            </select>
+
+            <label for="attack-damage-type">Damage Type: </label>
+            <select id="attack-damage-type" [(ngModel)]="action.attackDamageType">
+                <option *ngFor="let damageType of monster.damageTypesOrder" [value]="damageType">{{ damageType }}
+                </option>
+            </select>
+        </div>
+    </div>
+
+    <div *ngIf="action.save">
+        <!--TODO option for non damage saves-->
+        <!--TODO select save ability (str, dex, con, ...)-->
+        <label>Save Text (optional)</label>
+        <input type="text" [(ngModel)]="action.attackText">
+
+        <label for="attackRollDamage">Save Damage (relative)</label>
+        <select id="attackRollDamage" [(ngModel)]="action.saveDamage">
+            <option *ngFor="let i of damageModifier" [value]="i">
+                {{ i }}%
+            </option>
+        </select>
+
+        <label for="save-die-size">Die size</label>
+        <select id="save-die-size" [(ngModel)]="action.saveDice">
+            <option *ngFor="let die of dice" [value]="die">d{{ die*2-1 }}</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="multiAttack">Multiattack</label>
+        <select id="multiAttack" [(ngModel)]="action.multiAttack">
+            <option value=0>Not part of multiattack</option>
+            <option *ngFor="let numAttacks of multiAttacks" [value]="numAttacks">{{ numAttacks }}</option>
+        </select>
+    </div>
+    <!--TODO absolute damage multiplier select menu-->
+    <button (click)="removeAction(action)">Remove Action</button>
+
+</fieldset>
+<button (click)="addAction()">Add Action</button>
+
+<!--TODO display statblock-->
+<div>
+    <div>
+        <p><b>Target damage per round: </b>{{ monster.targetDamage }}</p>
+        <p><b>Actual damage per round: </b>{{ monster.averageDamagePerRound }}</p>
+    </div>
+    <div>
+        <h1>{{ monster.name }}</h1>
+        <p><b>Armor Class</b> {{ monster.ac }}</p>
+        <p><b>Hit Points</b> {{ monster.hp }}</p>
+        <p><b>Speed</b> {{ monster.speed }} ft.</p>
+        <p><b>Proficiency</b> {{ monster.proficiency }}</p>
+    </div>
+    <div class="ability-score">
+        <div>
+            <p><b>STR</b></p>
+            <p>{{ monster.strScore }} ({{ monster.calcAbilityMod(monster.strScore) | signedNumber }})
+            </p>
+        </div>
+        <div>
+            <p><b>DEX</b></p>
+            <p>{{ monster.dexScore }} ({{ monster.calcAbilityMod(monster.dexScore) | signedNumber }})
+            </p>
+        </div>
+        <div>
+            <p><b>CON</b></p>
+            <p>{{ monster.conScore }} ({{ monster.calcAbilityMod(monster.conScore) | signedNumber }})
+            </p>
+        </div>
+        <div>
+            <p><b>INT</b></p>
+            <p>{{ monster.intScore }} ({{ monster.calcAbilityMod(monster.intScore) | signedNumber }})
+            </p>
+        </div>
+        <div>
+            <p><b>WIS</b></p>
+            <p>{{ monster.wisScore }} ({{ monster.calcAbilityMod(monster.wisScore) | signedNumber }})
+            </p>
+        </div>
+        <div>
+            <p><b>CHA</b></p>
+            <p>{{ monster.chaScore }} ({{ monster.calcAbilityMod(monster.chaScore) | signedNumber }})
+            </p>
+        </div>
+    </div>
+    <h2 *ngIf="monster.actions.length > 0">Actions</h2>
+    <div *ngIf="monster.multiattackCount() > 1">
+        <b>Multiattack.</b> The {{ monster.name }} makes {{ monster.multiattackCount() | number }}
+        attacks<span *ngIf="monster.getMultiAttackList().length > 1">: </span>
+        <span *ngFor="let attack of monster.getMultiAttackList(); let last = last; let first = first;">
+            <span *ngIf="first && last"> with its {{ attack.name }}</span>
+            <span *ngIf="last && !first"> and </span>
+            <span *ngIf="!last && !first">, </span>
+            <span *ngIf="!(first && last)">{{ attack.attackCount }} with its {{ attack.name }}</span>
+            <span *ngIf="last">.</span>
+        </span>
+    </div>
+    <div *ngFor="let action of monster.actions">
+        <p><b>{{ action.name | titlecase }}.</b><span *ngIf="action.attack">
+                +{{ monster.toHit }} to hit, reach {{ action.reach }}.,
+                one target. Hit: {{ action.attackAverageDamage }} {{ action.attackDiceDisplay }}
+                {{ action.attackDamageType }} damage. {{ action.attackText }}
+            </span>
+            <span *ngIf="action.save">
+                The target must succeed on a DC{{ monster.dc }} {{ action.saveType | titlecase }} saving throw or take
+                {{ action.saveAverageDamage }} {{ action.saveDiceDisplay }} {{ action.saveDamageType }} damage. {{
+                action.saveText }}
+            </span>
+        </p>
+    </div>
+</div>
