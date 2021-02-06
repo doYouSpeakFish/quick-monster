@@ -9,6 +9,13 @@
 <label for="speed">Speed</label>
 <input id="speed" [(ngModel)]="monster.speed">
 
+<label for="damage-scaler">Scale damage higher or lower</label>
+<select id="damage-scaler">
+    <option *ngFor="let damageScaler of [-50, -40, -30, -20, -10, 0, 10, 20, 30, 40, 50]">
+        {{ damageScaler | signedNumber }}%
+    </option>
+</select>
+
 <div>
     <h2>Ability Scores</h2>
     <div>
@@ -61,8 +68,10 @@
 <fieldset *ngFor="let action of monster.actions">
     <a (click)="action.toggleVisible()"><h2>{{ action.name }}</h2></a>
     <div *ngIf="!action.hidden">
-        <label>Name</label>
-        <input type="text" [(ngModel)]="action.name">
+        <label for="name">Name</label>
+        <input id="name" type="text" [(ngModel)]="action.name">
+        <label for="reach">Reach</label>
+        <input id="reach" type="text" [(ngModel)]="action.reach">
         <label>Uses an attack roll</label>
         <input type="checkbox" id="isAttack" name="isAttack" value="isAttack" [(ngModel)]="action.attack">
         <label>Uses a saving throw</label>
@@ -194,7 +203,7 @@
     </div>
     <div *ngFor="let action of monster.actions">
         <p><b>{{ action.name | titlecase }}.</b><span *ngIf="action.attack">
-                +{{ monster.toHit }} to hit, reach {{ action.reach }} ft.,
+                +{{ monster.toHit }} to hit, reach {{ action.reach }}.,
                 one target. Hit: {{ action.attackAverageDamage }} {{ action.attackDiceDisplay }}
                 {{ action.attackDamageType }} damage. {{ action.attackText }}
             </span>

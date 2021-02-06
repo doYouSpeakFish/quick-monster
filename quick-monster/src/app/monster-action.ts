@@ -7,7 +7,7 @@ export class MonsterAction {
     text: string = "";
 
     // TODO allow reach to be adjusted
-    reach: string = "5";
+    reach: string = "5 ft";
 
     hidden: boolean = false;
 

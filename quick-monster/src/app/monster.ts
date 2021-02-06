@@ -57,7 +57,8 @@ export class Monster {
     DAMAGE_TYPES = DAMAGE_TYPES_ENUM;
 
     private _cr: string = "5";
-    targetDamage: number = 0;
+    private _targetDamage: number = 0;
+    damageScaler: number = 0;
     averageDamagePerRound: number = 0;
     ac: number;
     hp: number;
@@ -129,6 +130,14 @@ export class Monster {
     public set chaLevel(value: STRENGTH_LEVELS) {
         this._chaLevel = value;
         this.update();
+    }
+
+    // Other getters and setters
+    public get targetDamage(): number {
+        return this._targetDamage * (1 + (this.damageScaler/100));
+    }
+    public set targetDamage(value: number) {
+        this._targetDamage = value;
     }
 
     public calcAbilityMod(score: number) {
@@ -244,7 +253,7 @@ export class Monster {
 
     calcDice(): void {
         console.log("\nMonster: calculating action damages...")
-        let targetTotalDamage = this.monsterBases.get(this.cr)!.damage;
+        let targetTotalDamage = this.targetDamage;
         let multiAttackTotal = 0;
         let numLimitedUseAttacks = 0;
         let limitedUseMultiplier = 1;
