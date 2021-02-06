@@ -58,10 +58,12 @@ export class Monster {
 
     private _cr: string = "5";
     private _targetDamage: number = 0;
-    damageScaler: number = 0;
+    private _damageScaler: number = 0;
+    scalerOptions: number[] = [-50, -40, -30, -20, -10, 0, 10, 20, 30, 40, 50];
+    hpScaler: number = 0;
     averageDamagePerRound: number = 0;
     ac: number;
-    hp: number;
+    private _hp: number = 0;
     toHit: number;
     dc: number;
     save: number;
@@ -134,14 +136,30 @@ export class Monster {
 
     // Other getters and setters
     public get targetDamage(): number {
-        return this._targetDamage * (1 + (this.damageScaler/100));
+        return this._targetDamage * (1+this.damageScaler/100);
     }
     public set targetDamage(value: number) {
         this._targetDamage = value;
     }
 
     public calcAbilityMod(score: number) {
-        return Math.floor((score - 10)/2)
+        return Math.floor((score - 10)/2);
+    }
+    
+    public get damageScaler(): number {
+        return this._damageScaler;
+    }
+    public set damageScaler(value: number) {
+        this._damageScaler = value;
+        console.log("Monster: damageScaler = " + value);
+        this.calcDice();
+    }
+
+    public get hp(): number {
+        return Math.round(this._hp * (1 + this.hpScaler/100));
+    }
+    public set hp(value: number) {
+        this._hp = value;
     }
 
     private calcAbilityScore(level: STRENGTH_LEVELS): number {

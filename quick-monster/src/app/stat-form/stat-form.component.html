@@ -9,10 +9,17 @@
 <label for="speed">Speed</label>
 <input id="speed" [(ngModel)]="monster.speed">
 
-<label for="damage-scaler">Scale damage higher or lower</label>
-<select id="damage-scaler">
-    <option *ngFor="let damageScaler of [-50, -40, -30, -20, -10, 0, 10, 20, 30, 40, 50]">
+<label for="damage-scaler">Scale damage output higher or lower</label>
+<select id="damage-scaler" [(ngModel)]="monster.damageScaler">
+    <option *ngFor="let damageScaler of monster.scalerOptions" [value]="damageScaler">
         {{ damageScaler | signedNumber }}%
+    </option>
+</select>
+
+<label for="hp-scaler">Scale hit points higher or lower</label>
+<select id="hp-scaler" [(ngModel)]="monster.hpScaler">
+    <option *ngFor="let hpScaler of monster.scalerOptions" [value]="hpScaler">
+        {{ hpScaler | signedNumber }}%
     </option>
 </select>
 
