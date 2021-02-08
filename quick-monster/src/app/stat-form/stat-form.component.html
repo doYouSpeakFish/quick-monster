@@ -123,7 +123,7 @@
         <!--TODO option for non damage saves-->
         <!--TODO select save ability (str, dex, con, ...)-->
         <label>Save Text (optional)</label>
-        <input type="text" [(ngModel)]="action.attackText">
+        <input type="text" [(ngModel)]="action.saveText">
 
         <label for="attackRollDamage">Save Damage (relative)</label>
         <select id="attackRollDamage" [(ngModel)]="action.saveDamage">
@@ -162,7 +162,8 @@
         <p><b>Armor Class</b> {{ monster.ac }}</p>
         <p><b>Hit Points</b> {{ monster.hp }}</p>
         <p><b>Speed</b> {{ monster.speed }} ft.</p>
-        <p><b>Proficiency</b> {{ monster.proficiency }}</p>
+        <p><b>Proficiency</b> {{ monster.proficiency | signedNumber }}</p>
+        <p><b>Challenge</b> {{ monster.cr }}</p>
     </div>
     <div class="ability-score">
         <div>
@@ -213,15 +214,15 @@
             <span *ngIf="action.attack">
                 +{{ monster.toHit }} to hit, reach {{ action.reach }}.,
                 one target. Hit: {{ action.attackAverageDamage }} {{ action.attackDiceDisplay }}
-                {{ action.attackDamageType }} damage. {{ action.attackText | insertDC }}
+                {{ action.attackDamageType }} damage. {{ action.attackTextDisplay }}
             </span>
             <span *ngIf="action.save">
                 The target must succeed on a DC{{ monster.dc }} {{ action.saveType | titlecase }} saving throw or take
                 {{ action.saveAverageDamage }} {{ action.saveDiceDisplay }} {{ action.saveDamageType }} damage. {{
-                action.saveText | insertDC }}
+                action.saveTextDisplay }}
             </span>
             <span *ngIf="!action.attack && ! action.save">
-                {{ action.text | insertDC }}
+                {{ action.actionTextDisplay }}
             </span>
         </p>
     </div>

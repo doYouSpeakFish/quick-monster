@@ -6,14 +6,12 @@ import { AppComponent } from './app.component';
 import { StatFormComponent } from './stat-form/stat-form.component';
 import { FormsModule } from '@angular/forms';
 import { SignedNumberPipe } from './monsterClass';
-import { InsertDCPipe } from './insert-dc.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     StatFormComponent,
-    SignedNumberPipe,
-    InsertDCPipe
+    SignedNumberPipe
   ],
   imports: [
     BrowserModule,

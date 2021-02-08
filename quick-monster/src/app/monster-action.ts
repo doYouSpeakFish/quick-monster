@@ -57,6 +57,7 @@ export class MonsterAction {
         return 0;
     }
     private get totalAttackDamage(): number {
+        if (!this.attack) { return 0; }
         return Math.max(1, this.multiAttack) * this.attackDamage;
     }
     public get attackDice(): number {
@@ -79,6 +80,7 @@ export class MonsterAction {
         return 0;
     }
     private get totalSaveDamage(): number {
+        if (!this.save) { return 0; }
         return Math.max(1, this.multiAttack) * this.saveDamage;
     }
     public get save(): boolean {
@@ -157,6 +159,18 @@ export class MonsterAction {
             display += String(Math.abs(this.attackDamageMod));
         }
         return display + ")";
+    }
+
+    public get attackTextDisplay(): string {
+        return this.attackText.replace(/DC\?/, "DC" + this.monster.dc);
+    }
+
+    public get saveTextDisplay(): string {
+        return this.saveText.replace(/DC\?/, "DC" + this.monster.dc);
+    }
+
+    public get actionTextDisplay(): string {
+        return this.text.replace(/DC\?/, "DC" + this.monster.dc);
     }
 
     // Dice and damage modifier calc
