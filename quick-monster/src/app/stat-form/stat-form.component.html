@@ -73,7 +73,9 @@
 
 <h2>Actions</h2>
 <fieldset *ngFor="let action of monster.actions">
-    <a (click)="action.toggleVisible()"><h2>{{ action.name }}</h2></a>
+    <a (click)="action.toggleVisible()">
+        <h2>{{ action.name }}</h2>
+    </a>
     <div *ngIf="!action.hidden">
         <label for="name">Name</label>
         <input id="name" type="text" [(ngModel)]="action.name">
@@ -88,6 +90,7 @@
             <input type="text" id="action-text" [(ngModel)]="action.text">
             <p class="hint">hint: type DC? to generate a CR appropriate DC</p>
         </div>
+
         <div *ngIf="action.attack || action.save">
             <label for="limitedUse">Limited Use</label>
             <input type="checkbox" id="limitedUse" name="limitedUse" value="limitedUse" [(ngModel)]="action.limitedUse">
@@ -95,6 +98,7 @@
             <input type="checkbox" id="multiTarget" name="multiTarget" value="multiTarget"
                 [(ngModel)]="action.multiTarget">
         </div>
+
         <div *ngIf="action.attack">
             <label>Attack Text (optional)</label>
             <input type="text" [(ngModel)]="action.attackText">
@@ -119,34 +123,46 @@
                 </option>
             </select>
         </div>
-    </div>
 
-    <div *ngIf="action.save">
-        <!--TODO option for non damage saves-->
-        <!--TODO select save ability (str, dex, con, ...)-->
-        <label>Save Text (optional)</label>
-        <input type="text" [(ngModel)]="action.saveText">
-        <p class="hint">hint: type DC? to generate a CR appropriate DC</p>
+        <div *ngIf="action.save">
+            <!--TODO option for non damage saves-->
+            <!--TODO select save ability (str, dex, con, ...)-->
+            <label>Save Text (optional)</label>
+            <input type="text" [(ngModel)]="action.saveText">
+            <p class="hint">hint: type DC? to generate a CR appropriate DC</p>
 
-        <label for="attackRollDamage">Save Damage (relative)</label>
-        <select id="attackRollDamage" [(ngModel)]="action.saveDamage">
-            <option *ngFor="let i of damageModifier" [value]="i">
-                {{ i }}%
-            </option>
-        </select>
+            <label for="attackRollDamage">Save Damage (relative)</label>
+            <select id="attackRollDamage" [(ngModel)]="action.saveDamage">
+                <option [value]="0">0%</option>
+                <option *ngFor="let i of damageModifier" [value]="i">
+                    {{ i }}%
+                </option>
+            </select>
 
-        <label for="save-die-size">Die size</label>
-        <select id="save-die-size" [(ngModel)]="action.saveDice">
-            <option *ngFor="let die of dice" [value]="die">d{{ die*2-1 }}</option>
-        </select>
-    </div>
+            <label for="save-die-size">Die size</label>
+            <select id="save-die-size" [(ngModel)]="action.saveDice">
+                <option *ngFor="let die of dice" [value]="die">d{{ die*2-1 }}</option>
+            </select>
 
-    <div>
-        <label for="multiAttack">Multiattack</label>
-        <select id="multiAttack" [(ngModel)]="action.multiAttack">
-            <option value=0>Not part of multiattack</option>
-            <option *ngFor="let numAttacks of multiAttacks" [value]="numAttacks">{{ numAttacks }}</option>
-        </select>
+            <label for="save-damage-type">Damage Type: </label>
+            <select id="save-damage-type" [(ngModel)]="action.saveDamageType">
+                <option *ngFor="let damageType of monster.damageTypesOrder" [value]="damageType">{{ damageType }}
+                </option>
+            </select>
+
+            <label for="save-ability">Save Ability</label>
+            <select id="save-ability" [(ngModel)]="action.saveType">
+                <option *ngFor="let ability of saveAbilities" [value]="ability">{{ ability }}</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="multiAttack">Multiattack</label>
+            <select id="multiAttack" [(ngModel)]="action.multiAttack">
+                <option value=0>Not part of multiattack</option>
+                <option *ngFor="let numAttacks of multiAttacks" [value]="numAttacks">{{ numAttacks }}</option>
+            </select>
+        </div>
     </div>
     <!--TODO absolute damage multiplier select menu-->
     <button (click)="removeAction(action)">Remove Action</button>

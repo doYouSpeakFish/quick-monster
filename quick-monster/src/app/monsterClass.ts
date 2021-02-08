@@ -314,7 +314,15 @@ export class Monster {
 
         // Normalize the action damages so the actual three round damage equals the target three round damage
         let targetDmg3rounds = targetTotalDamage*3;
-        let dmgNormalizer = targetDmg3rounds / Math.max(1, this.threeRoundDamage());
+        let actualDmg3rounds = this.threeRoundDamage();
+        console.log("Monster: three round damage = " + actualDmg3rounds);
+        let dmgNormalizer: number;
+        if (actualDmg3rounds == 0) {
+            dmgNormalizer = 1;
+        } else {
+            dmgNormalizer = targetDmg3rounds / actualDmg3rounds;
+        }
+        console.log("Monster: damage normalizer = " + dmgNormalizer);
         console.log("Monster: renormalizing damage...");
         for (let action of actionsTargetDamage) {
             action.monsterAction.calcDamage(action.damage * dmgNormalizer);

@@ -99,10 +99,11 @@ export class MonsterAction {
     }
 
     public get saveDiceDisplay(): string {
-        return "(" + this.saveNumDie + "d" + (this.saveDice*2 -1) + ")";
+        return "(" + this.saveNumDie + "d" + (this.saveDice * 2 - 1) + ")";
     }
     public get saveAverageDamage(): number {
-        return Math.floor(this.saveNumDie*this.saveDice);
+        if (!this.save) { return 0; }
+        return Math.floor(this.saveNumDie * this.saveDice);
     }
 
     // Other getters and setters
@@ -132,7 +133,6 @@ export class MonsterAction {
 
     public get totalDamage(): number {
         let dmg = this.totalAttackDamage + this.totalSaveDamage;
-        
         return dmg;
     }
 
@@ -149,7 +149,7 @@ export class MonsterAction {
         if (this.attackNumDie == 0) {
             return "";
         }
-        let display = "(" + this.attackNumDie + "d" + (this.attackDice*2 -1);
+        let display = "(" + this.attackNumDie + "d" + (this.attackDice * 2 - 1);
         if (this.attackDamageMod != 0) {
             if (this.attackDamageMod > 0) {
                 display += " + "
@@ -175,7 +175,10 @@ export class MonsterAction {
 
     // Dice and damage modifier calc
     calcDamage(damage: number): void {
-        if (!this.totalDamage) { return }
+        if (!this.totalDamage) {
+            this.calcSaveDamage(0);
+            this.calcAttackDamage(0);
+        }
         damage *= this._absoluteDamageMultiplier;
         if (this.multiTarget) { damage *= 0.5 }
 
@@ -186,6 +189,7 @@ export class MonsterAction {
     }
 
     private calcAttackDamage(damage: number): void {
+        console.log("MonsterAction: calculating attack dice with target damage = " + damage);
         if (damage == 0) {
             this.attackNumDie = 0;
             this.attackDamageMod = 0;
@@ -208,6 +212,7 @@ export class MonsterAction {
     }
 
     private calcSaveDamage(damage: number): void {
+        console.log("MonsterAction: calculating save dice with target damage = " + damage);
         if (damage == 0) {
             this.saveNumDie = 0;
         } else {
