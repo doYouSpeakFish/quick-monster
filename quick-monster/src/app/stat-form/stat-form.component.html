@@ -86,6 +86,7 @@
         <div *ngIf="!action.attack && !action.save">
             <label for="action-text">Action Text</label>
             <input type="text" id="action-text" [(ngModel)]="action.text">
+            <p class="hint">hint: type DC? to generate a CR appropriate DC</p>
         </div>
         <div *ngIf="action.attack || action.save">
             <label for="limitedUse">Limited Use</label>
@@ -97,6 +98,7 @@
         <div *ngIf="action.attack">
             <label>Attack Text (optional)</label>
             <input type="text" [(ngModel)]="action.attackText">
+            <p class="hint">hint: type DC? to generate a CR appropriate DC</p>
 
             <label for="attackRollDamage">Attack Roll Damage (relative)</label>
             <select id="attackRollDamage" [(ngModel)]="action.attackDamage">
@@ -124,6 +126,7 @@
         <!--TODO select save ability (str, dex, con, ...)-->
         <label>Save Text (optional)</label>
         <input type="text" [(ngModel)]="action.saveText">
+        <p class="hint">hint: type DC? to generate a CR appropriate DC</p>
 
         <label for="attackRollDamage">Save Damage (relative)</label>
         <select id="attackRollDamage" [(ngModel)]="action.saveDamage">

@@ -162,15 +162,15 @@ export class MonsterAction {
     }
 
     public get attackTextDisplay(): string {
-        return this.attackText.replace(/DC\?/, "DC" + this.monster.dc);
+        return this.attackText.replace(/DC\?/, "DC " + this.monster.dc);
     }
 
     public get saveTextDisplay(): string {
-        return this.saveText.replace(/DC\?/, "DC" + this.monster.dc);
+        return this.saveText.replace(/DC\?/, "DC " + this.monster.dc);
     }
 
     public get actionTextDisplay(): string {
-        return this.text.replace(/DC\?/, "DC" + this.monster.dc);
+        return this.text.replace(/DC\?/, "DC " + this.monster.dc);
     }
 
     // Dice and damage modifier calc
