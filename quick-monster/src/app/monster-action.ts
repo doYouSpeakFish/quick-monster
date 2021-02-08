@@ -17,7 +17,7 @@ export class MonsterAction {
     private _absoluteDamageMultiplier = 1;
 
     private _attack: boolean = true;
-    attackText: string = "";
+    private _attackText: string = "";
     private _attackDamage: number = 50;
     private _attackDice: number = 3.5;
     attackNumDie: number = 1;
@@ -34,7 +34,7 @@ export class MonsterAction {
 
     constructor(public monster: Monster, private monsterBases: Map<string, MonsterStatBase>) {
         this.attackDamageType = monster.DAMAGE_TYPES.BLUDGEONING;
-        this.saveDamageType = monster.DAMAGE_TYPES.NECROTIC;
+        this.saveDamageType = monster.DAMAGE_TYPES.POISON;
         monster.calcDice();
     }
 
@@ -66,6 +66,55 @@ export class MonsterAction {
     public set attackDice(value: number) {
         this._attackDice = value;
         this.monster.calcDice();
+    }
+    public get attackDiceDisplay(): string {
+        if (this.attackNumDie == 0) {
+            return "";
+        }
+        let display = "(" + this.attackNumDie + "d" + (this.attackDice * 2 - 1);
+        if (this.attackDamageMod != 0) {
+            if (this.attackDamageMod > 0) {
+                display += " + "
+            } else if (this.attackDamageMod < 0) {
+                display += " - "
+            }
+            display += String(Math.abs(this.attackDamageMod));
+        }
+        return display + ")";
+    }
+
+    public get attackText(): string {
+        return this._attackText;
+    }
+    public set attackText(value: string) {
+        this._attackText = value;
+    }
+    public get attackTextDisplay(): string {
+        // insert DC if user has typed DC?
+        let text = this.attackText.replace(/DC\?/, "DC " + this.monster.dc);
+
+        // insert to hit if user has typed TOHIT?
+        text = this.attackText.replace(/TOHIT\?/, String(this.monster.toHit));
+
+        // insert damage if user has types DMG?
+        let matches = text.match(/(DMG\?)(\d*%)?/g); // match DMG? optionally followed by digits and then a percent character
+        matches = matches && matches.length? matches : [];
+        console.log("MonsterAction: matches = " + matches.toString())
+        let attackDamageSources = [];
+        for (let damage of matches) {
+            damage = damage.replace("DMG?", "");
+            let relativeDamage: number = 50;
+            if (damage.length > 0) {
+                relativeDamage = +damage.replace("%", "");
+            }
+            attackDamageSources.push(relativeDamage);
+        }
+        while (text.indexOf("DMG?") > 0) {
+            // TODO calculate what the damage should be and insert it.
+            //      the damage for the main part of the attack needs to be included when calculating how the damage is distributed
+            //      and must be updated aswell.
+        }
+        return text;
     }
 
     // Saving throw getters and setters
@@ -143,26 +192,6 @@ export class MonsterAction {
         let damage = this.attackNumDie * this.attackDice + this.attackDamageMod;
         damage = Math.floor(damage);
         return damage;
-    }
-
-    public get attackDiceDisplay(): string {
-        if (this.attackNumDie == 0) {
-            return "";
-        }
-        let display = "(" + this.attackNumDie + "d" + (this.attackDice * 2 - 1);
-        if (this.attackDamageMod != 0) {
-            if (this.attackDamageMod > 0) {
-                display += " + "
-            } else if (this.attackDamageMod < 0) {
-                display += " - "
-            }
-            display += String(Math.abs(this.attackDamageMod));
-        }
-        return display + ")";
-    }
-
-    public get attackTextDisplay(): string {
-        return this.attackText.replace(/DC\?/, "DC " + this.monster.dc);
     }
 
     public get saveTextDisplay(): string {
