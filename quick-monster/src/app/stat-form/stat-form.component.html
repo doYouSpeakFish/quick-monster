@@ -3,7 +3,7 @@
 
 <label for="challenge">CR </label>
 <select id="challenge" [(ngModel)]="monster.cr">
-    <option *ngFor="let cr of monsterBases | keyvalue: unsorted" [value]="cr.key">{{ cr.key }}</option>
+    <option *ngFor="let cr of monster.monsterBases | keyvalue: unsorted" [value]="cr.key">{{ cr.key }}</option>
 </select>
 
 <label for="speed">Speed</label>
@@ -209,15 +209,19 @@
         </span>
     </div>
     <div *ngFor="let action of monster.actions">
-        <p><b>{{ action.name | titlecase }}.</b><span *ngIf="action.attack">
+        <p><b>{{ action.name | titlecase }}.</b>
+            <span *ngIf="action.attack">
                 +{{ monster.toHit }} to hit, reach {{ action.reach }}.,
                 one target. Hit: {{ action.attackAverageDamage }} {{ action.attackDiceDisplay }}
-                {{ action.attackDamageType }} damage. {{ action.attackText }}
+                {{ action.attackDamageType }} damage. {{ action.attackText | insertDC }}
             </span>
             <span *ngIf="action.save">
                 The target must succeed on a DC{{ monster.dc }} {{ action.saveType | titlecase }} saving throw or take
                 {{ action.saveAverageDamage }} {{ action.saveDiceDisplay }} {{ action.saveDamageType }} damage. {{
-                action.saveText }}
+                action.saveText | insertDC }}
+            </span>
+            <span *ngIf="!action.attack && ! action.save">
+                {{ action.text | insertDC }}
             </span>
         </p>
     </div>

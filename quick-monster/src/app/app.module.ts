@@ -5,13 +5,15 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { StatFormComponent } from './stat-form/stat-form.component';
 import { FormsModule } from '@angular/forms';
-import { SignedNumberPipe } from './monster';
+import { SignedNumberPipe } from './monsterClass';
+import { InsertDCPipe } from './insert-dc.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     StatFormComponent,
-    SignedNumberPipe
+    SignedNumberPipe,
+    InsertDCPipe
   ],
   imports: [
     BrowserModule,

@@ -1,5 +1,5 @@
 import { MonsterStatBase } from "./metrics";
-import { Monster } from "./monster";
+import { Monster } from "./monsterClass";
 
 export class MonsterAction {
 
@@ -135,6 +135,9 @@ export class MonsterAction {
     }
 
     public get attackAverageDamage(): number {
+        if (!this.attack) {
+            return 0;
+        }
         let damage = this.attackNumDie * this.attackDice + this.attackDamageMod;
         damage = Math.floor(damage);
         return damage;
